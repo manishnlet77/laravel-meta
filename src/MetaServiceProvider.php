@@ -28,6 +28,10 @@ class MetaServiceProvider extends ServiceProvider
                 __DIR__.'/../config/meta.php' => config_path('meta.php'),
             ], 'meta-config');
 
+            $this->commands([
+                \Vendor\LaravelMeta\Console\Commands\MetaTestTokenCommand::class,
+            ]);
+
             // Migrations will be published if META_DATABASE_ENABLED is true
         }
     }
