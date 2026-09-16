@@ -34,5 +34,11 @@ class MetaServiceProvider extends ServiceProvider
 
             // Migrations will be published if META_DATABASE_ENABLED is true
         }
+
+        // Load Routes
+        if (config('meta.sandbox.enabled')) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'meta');
+        }
     }
 }

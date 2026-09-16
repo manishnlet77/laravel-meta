@@ -90,4 +90,17 @@ return [
             'sleep' => 100, // milliseconds
         ],
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Sandbox Testing UI
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, a visual testing UI will be available at /meta/sandbox
+    | It is highly recommended to disable this in production environments.
+    |
+    */
+    'sandbox' => [
+        'enabled' => env('META_SANDBOX_ENABLED', env('APP_ENV') !== 'production'),
+        'route' => '/meta/sandbox',
+    ],
 ];
