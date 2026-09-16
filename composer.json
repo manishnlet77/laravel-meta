@@ -1,5 +1,5 @@
 {
-    "name": "manishnlet77/laravel-meta",
+    "name": "meta-engine/laravel-meta",
     "description": "A modular Meta API SDK/integration package for Laravel, with optional persistence and optional automation.",
     "type": "library",
     "require": {
