@@ -8,14 +8,9 @@ To install the `laravel-meta` package into your Laravel application, follow thes
 
 ## 1. Install via Composer
 
-If you are using a local path repository (for local testing):
+If you are installing from GitHub, require the latest `main` branch to get the most recent features (like CRM Scaffolding) until the next stable release is tagged:
 ```bash
-composer require vendor/laravel-meta *@dev
-```
-
-If you are installing from GitHub or Packagist:
-```bash
-composer require manishnlet77/laravel-meta
+composer require meta-engine/laravel-meta:dev-main
 ```
 
 ## 2. Publish Configuration

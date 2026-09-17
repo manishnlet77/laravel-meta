@@ -21,7 +21,7 @@ This package provides a unified interface for interacting with the Meta Graph AP
 Install the package globally via Composer:
 
 ```bash
-composer require meta-engine/laravel-meta
+composer require meta-engine/laravel-meta:dev-main
 ```
 
 *(For Laravel 10.x, 11.x, and 12.x)*
