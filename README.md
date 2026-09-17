@@ -83,7 +83,21 @@ You will receive a clear pass/fail report confirming if your App ID, Secret, and
 
 ---
 
-## 🏗️ 5. Architecture & Usage Modes
+## ⚡ 5. 1-Click CRM Integration & UI Generator
+
+Want to build a Meta Dashboard directly into your own application? We've automated the entire backend for you!
+
+By simply running:
+```bash
+php artisan meta:install-crm
+```
+The package will instantly scaffold the Database Migrations, Models, and a full API Controller directly into your application. 
+
+**What about the UI?** We provide a ready-to-use **[AI Prompt Generator](docs/08-crm-integration-guide.md#2-generating-the-ui-the-ai-prompt)** in the documentation. Just copy and paste it into ChatGPT, Claude, or Cursor, and it will instantly write the frontend code (Vue, React, Blade, etc.) that hooks perfectly into the backend we generated!
+
+---
+
+## 🏗️ 6. Architecture & Usage Modes
 
 This package natively supports two usage modes depending on your application's architecture:
 
