@@ -8,6 +8,12 @@ A modular, highly-independent Meta (Facebook & Instagram) API SDK and integratio
 
 This package provides a unified interface for interacting with the Meta Graph API, supporting everything from simple automated posts to complex Lead Ads webhooks, without forcing unnecessary database tables into your application.
 
+### 🌟 Key Features
+- **Facebook Page Publishing**: Publish Text, Images, Videos, Carousels, Stories, and Reels (including 3-step chunked upload).
+- **Instagram Publishing**: Publish Images, Videos, Carousels, Stories, and Reels (using async container polling). *(Note: Meta API requires media for IG, no text-only posts).*
+- **Lead Ads & Webhooks**: Integrated webhook support for real-time events.
+- **Visual Sandbox**: Built-in UI to test tokens, fetch leads, and test posts directly.
+
 ---
 
 ## 🚀 1. Installation
