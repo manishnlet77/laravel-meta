@@ -244,3 +244,67 @@ If you are a developer taking over this project, here is the ultimate cheat shee
 - **Where is the Publishing Logic?** `app/Social/Platforms/MetaPlatform.php`
 - **Where is the Webhook Logic?** `app/Http/Controllers/Webhook/MetaWebhookController.php`
 - **Where do background API tests live?** Look at `test_all.php` or `test_everything.php` in the root folder for functional examples of how models and jobs interact with the platform adapter.
+
+---
+
+## 8. Fetching & Filtering Media (Reels, Videos, Posts)
+
+The package includes dedicated `Fetcher` classes to retrieve and filter your published media, which you can easily map and save to your own database.
+
+### Fetching Top 10 Instagram Videos/Reels
+To fetch the top 10 most engaged (likes + comments) Reels or Videos from Instagram:
+
+```php
+use Vendor\LaravelMeta\Facades\Meta;
+
+$igUserId = 'YOUR_IG_USER_ID';
+
+// Fetch Top 10 Instagram Videos
+$topVideos = Meta::instagramFetcher()->getTop($igUserId, 10, 'VIDEO');
+
+// Fetch Top 10 Instagram Reels
+$topReels = Meta::instagramFetcher()->getTop($igUserId, 10, 'REELS');
+
+// Fetch Top 10 Images
+$topImages = Meta::instagramFetcher()->getTop($igUserId, 10, 'IMAGE');
+```
+
+### Saving Fetched Data to Your Database
+The Meta Graph API returns many fields (`id`, `caption`, `media_url`, `media_product_type`, `permalink`, `like_count`, `comments_count`). Here is how you can loop through the response and save it to your local database:
+
+```php
+// Example: Saving Instagram Media to a local `posts` table
+$response = Meta::instagramFetcher()->getMedia($igUserId, 50); // Get latest 50
+
+foreach ($response['data'] as $media) {
+    DB::table('posts')->updateOrInsert(
+        ['platform_id' => $media['id']], // Unique constraint
+        [
+            'caption'      => $media['caption'] ?? '',
+            'media_url'    => $media['media_url'] ?? '',
+            'media_type'   => $media['media_type'] ?? 'UNKNOWN', // IMAGE, VIDEO, CAROUSEL_ALBUM
+            'product_type' => $media['media_product_type'] ?? null, // e.g. REELS
+            'permalink'    => $media['permalink'] ?? '',
+            'likes'        => $media['like_count'] ?? 0,
+            'comments'     => $media['comments_count'] ?? 0,
+            'posted_at'    => \Carbon\Carbon::parse($media['timestamp']),
+        ]
+    );
+}
+```
+
+### Fetching Facebook Posts and Videos
+You can do the exact same thing for Facebook Pages:
+
+```php
+$pageId = 'YOUR_PAGE_ID';
+
+// Fetch specific media types
+$posts = Meta::facebookFetcher()->getPosts($pageId, 20);
+$reels = Meta::facebookFetcher()->getReels($pageId, 20);
+$videos = Meta::facebookFetcher()->getVideos($pageId, 20);
+$photos = Meta::facebookFetcher()->getPhotos($pageId, 20);
+
+// Fetch the absolute most popular Facebook Posts
+$topPosts = Meta::facebookFetcher()->getTop($pageId, 'posts', 10);
+```
