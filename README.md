@@ -117,8 +117,12 @@ Provides a robust synchronization layer using local database tables.
 Detailed documentation for specific modules can be found in the `docs/` folder:
 
 * [Installation Guide](docs/01-installation.md)
+* [Publishing Guide](docs/02-publishing.md)
+* [Fetching & Filtering Media](docs/03-fetching.md)
 * [Token and Authentication Guide](docs/04-token-and-authentication.md)
-* [Testing Guide](docs/testing.md)
-
+* [Account Access & Troubleshooting](docs/05-account-access-check.md)
+* [Leads Retrieval](docs/06-leads-retrieval.md)
+* [Ads Management](docs/07-ads-management.md)
+* [Comprehensive API Testing](docs/testing.md)
 ---
 *Developed by ManishNlet77. Open source under the MIT License.*

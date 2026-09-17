@@ -9,15 +9,20 @@ use Vendor\LaravelMeta\Core\Exceptions\MetaAuthenticationException;
 
 class MetaE2ETestCommand extends Command
 {
-    protected $signature = 'meta:e2e-test';
-    protected $description = 'Run a full end-to-end test publishing, fetching, and deleting all supported media types to Facebook and Instagram.';
+    protected $signature = 'meta:e2e-test {--publish : Run only publishing tests} {--fetch : Run only fetching tests} {--all : Run all available tests}';
+    protected $description = 'Run an end-to-end test against the Meta Graph API based on specific use cases.';
 
     protected array $createdFbPosts = [];
     protected array $createdIgPosts = [];
 
     public function handle()
     {
-        $this->info("Starting Meta E2E Test...");
+        $this->info("Starting Modular Meta API Test...");
+
+        // Determine which tests to run
+        $runAll = $this->option('all') || (!$this->option('publish') && !$this->option('fetch'));
+        $runPublish = $this->option('publish') || $runAll;
+        $runFetch = $this->option('fetch') || $runAll;
 
         try {
             // 1. Verify Credentials & Get Accounts
@@ -40,89 +45,92 @@ class MetaE2ETestCommand extends Command
                 $this->warn("No linked Instagram account found for this Page. IG tests will be skipped.");
             }
 
-            // 2. Create Dummy Media
-            $this->info("2. Generating temporary dummy media...");
-            $imagePath = $this->generateDummyImage();
-            $videoPath = $this->generateDummyVideo();
-            $imageUrl = url('meta-test-dummy.jpg'); // These URLs might not be publicly accessible if testing locally, 
-            $videoUrl = url('meta-test-dummy.mp4'); // which will fail Meta API. So we will just use binary upload where possible, or a public placeholder for URLs.
-
-            // Since local URLs won't work with Meta Graph API, we'll use public placeholders for URL-based endpoints
-            $publicImageUrl = 'https://picsum.photos/800/800.jpg';
-            $publicVideoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
-
-            // 3. Test Facebook Publishing
-            $this->info("3. Testing Facebook Publishing...");
-            
-            // Text
-            $this->line(" - Publishing Text...");
-            $post = Meta::facebook()->publishText($pageId, "E2E Test: Text Post " . time());
-            $this->createdFbPosts[] = $post['id'];
-            $this->line("   [OK] Post ID: " . $post['id']);
-
-            // Image
-            $this->line(" - Publishing Image...");
-            $photo = Meta::facebook()->publishImage($pageId, $publicImageUrl, "E2E Test: Image Post " . time());
-            $this->createdFbPosts[] = $photo['id'];
-            $this->line("   [OK] Photo ID: " . $photo['id']);
-
-            // Reel (Binary Upload)
-            $this->line(" - Publishing Reel (Binary 3-Step Chunking)...");
-            $reel = Meta::facebook()->publishReel($pageId, $videoPath, "E2E Test: Reel " . time());
-            if (isset($reel['video_id'])) {
-                $this->createdFbPosts[] = $reel['video_id'];
-                $this->line("   [OK] Reel ID: " . $reel['video_id']);
-            }
-
-            // 4. Test Instagram Publishing
-            if ($igUserId) {
-                $this->info("4. Testing Instagram Publishing...");
+            // 2. Publishing Tests
+            if ($runPublish) {
+                $this->info("====================================");
+                $this->info("2. PUBLISHING TESTS");
+                $this->info("====================================");
                 
-                // Image
-                $this->line(" - Publishing Image...");
-                $igPhoto = Meta::instagram()->publishImage($igUserId, $publicImageUrl, "E2E Test: IG Image " . time());
-                $this->createdIgPosts[] = $igPhoto['id'];
-                $this->line("   [OK] IG Photo ID: " . $igPhoto['id']);
+                $imagePath = $this->generateDummyImage();
+                $videoPath = $this->generateDummyVideo();
+                $publicImageUrl = 'https://picsum.photos/800/800.jpg';
+                $publicVideoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
 
-                // Reel
-                $this->line(" - Publishing Reel (Async)...");
-                $igReel = Meta::instagram()->publishReel($igUserId, $publicVideoUrl, "E2E Test: IG Reel " . time());
-                $this->createdIgPosts[] = $igReel['id'];
-                $this->line("   [OK] IG Reel ID: " . $igReel['id']);
+                // Facebook Publishing
+                $this->line("\n[Facebook]");
+                $post = Meta::facebook()->publishText($pageId, "API Test: Text Post " . time());
+                $this->createdFbPosts[] = $post['id'];
+                $this->line("   [OK] Text Post ID: " . $post['id']);
+
+                $photo = Meta::facebook()->publishImage($pageId, $publicImageUrl, "API Test: Image Post " . time());
+                $this->createdFbPosts[] = $photo['id'];
+                $this->line("   [OK] Photo ID: " . $photo['id']);
+
+                $reel = Meta::facebook()->publishReel($pageId, $videoPath, "API Test: Reel " . time());
+                if (isset($reel['video_id'])) {
+                    $this->createdFbPosts[] = $reel['video_id'];
+                    $this->line("   [OK] Reel ID: " . $reel['video_id']);
+                }
+
+                // Instagram Publishing
+                if ($igUserId) {
+                    $this->line("\n[Instagram]");
+                    $igPhoto = Meta::instagram()->publishImage($igUserId, $publicImageUrl, "API Test: IG Image " . time());
+                    $this->createdIgPosts[] = $igPhoto['id'];
+                    $this->line("   [OK] IG Photo ID: " . $igPhoto['id']);
+
+                    $igReel = Meta::instagram()->publishReel($igUserId, $publicVideoUrl, "API Test: IG Reel " . time());
+                    $this->createdIgPosts[] = $igReel['id'];
+                    $this->line("   [OK] IG Reel ID: " . $igReel['id']);
+                }
+
+                // Cleanup Dummy Local Files
+                @unlink($imagePath);
+                @unlink($videoPath);
             }
 
-            // 5. Test Fetching
-            $this->info("5. Testing Fetchers...");
-            $topFb = Meta::facebookFetcher()->getTop($pageId, 'posts', 1);
-            $this->line("   [OK] FB Fetcher retrieved " . count($topFb['data'] ?? []) . " top posts.");
+            // 3. Fetching Tests
+            if ($runFetch) {
+                $this->info("====================================");
+                $this->info("3. FETCHING TESTS");
+                $this->info("====================================");
+                
+                $this->line("\n[Facebook]");
+                $topFb = Meta::facebookFetcher()->getTop($pageId, 'posts', 1);
+                $this->line("   [OK] Successfully fetched " . count($topFb['data'] ?? []) . " top Facebook posts.");
 
-            if ($igUserId) {
-                $topIg = Meta::instagramFetcher()->getTop($igUserId, 1);
-                $this->line("   [OK] IG Fetcher retrieved " . count($topIg['data'] ?? []) . " top media items.");
-            }
-
-            // 6. Cleanup
-            $this->info("6. Cleaning up test data...");
-            foreach ($this->createdFbPosts as $fbId) {
-                try {
-                    Meta::client()->delete($fbId);
-                    $this->line("   [DELETED] FB Post: {$fbId}");
-                } catch (\Exception $e) {
-                    $this->error("   [FAILED TO DELETE] FB Post {$fbId}: " . $e->getMessage());
+                if ($igUserId) {
+                    $this->line("\n[Instagram]");
+                    $topIg = Meta::instagramFetcher()->getTop($igUserId, 1);
+                    $this->line("   [OK] Successfully fetched " . count($topIg['data'] ?? []) . " top Instagram media items.");
                 }
             }
 
-            if (!empty($this->createdIgPosts)) {
-                $this->warn("   [MANUAL CLEANUP REQUIRED] Instagram Graph API does not support deleting posts.");
-                foreach ($this->createdIgPosts as $igId) {
-                    $this->line("   Please manually delete IG Post: {$igId}");
+            // 4. API Cleanup
+            if (!empty($this->createdFbPosts) || !empty($this->createdIgPosts)) {
+                $this->info("====================================");
+                $this->info("4. POST-TEST CLEANUP");
+                $this->info("====================================");
+                
+                foreach ($this->createdFbPosts as $fbId) {
+                    try {
+                        Meta::client()->delete($fbId);
+                        $this->line("   [DELETED] FB Post: {$fbId}");
+                    } catch (\Exception $e) {
+                        $this->error("   [FAILED TO DELETE] FB Post {$fbId}: " . $e->getMessage());
+                    }
+                }
+
+                if (!empty($this->createdIgPosts)) {
+                    $this->warn("\n   [MANUAL CLEANUP REQUIRED]");
+                    $this->warn("   Instagram Graph API does not support programmatic deletion.");
+                    foreach ($this->createdIgPosts as $igId) {
+                        $this->line("   Please manually delete IG Post: {$igId}");
+                    }
                 }
             }
 
-            @unlink($imagePath);
-            @unlink($videoPath);
-
-            $this->info("✅ E2E Test Completed Successfully!");
+            $this->info("\n✅ Requested Tests Completed Successfully!");
 
         } catch (MetaAuthenticationException $e) {
             $this->error("Authentication Error: " . $e->getMessage());
