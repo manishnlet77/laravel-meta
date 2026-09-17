@@ -27,8 +27,8 @@ Please refer to the specific guides below depending on what you are trying to ac
 7. **[Ads & Ad Account Management](docs/07-ads-management.md)**
    *(Draft)* Blueprint for managing Ad Accounts, Campaigns, and fetching Ads insights in the next major release.
 
-8. **[CRM Integration (1-Click Backend & UI Prompt)](docs/08-crm-integration-guide.md)**
-   Want to build a Meta Dashboard in your own app? The backend is a 1-click installation (`php artisan meta:install-crm`). We also provide a ready-to-use **AI Prompt** that you can copy/paste to automatically generate the Vue/React/Blade UI for it!
+8. **[CRM Integration (1-Click Backend)](docs/08-crm-integration-guide.md)**
+   Want to build a Meta Dashboard in your own app? The backend is a 1-click installation (`php artisan meta:install-crm`). We provide a checklist for building the UI in your preferred frontend stack.
 
 9. **[End-to-End Testing](docs/testing.md)**
    How to run the built-in Sandbox UI and Artisan CLI test commands (`php artisan meta:e2e-test`) to verify your application works before deploying to production.

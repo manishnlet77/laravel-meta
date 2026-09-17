@@ -83,7 +83,7 @@ You will receive a clear pass/fail report confirming if your App ID, Secret, and
 
 ---
 
-## ⚡ 5. 1-Click CRM Integration & UI Generator
+## ⚡ 5. 1-Click CRM Integration
 
 Want to build a Meta Dashboard directly into your own application? We've automated the entire backend for you!
 
@@ -93,7 +93,7 @@ php artisan meta:install-crm
 ```
 The package will instantly scaffold the Database Migrations, Models, and a full API Controller directly into your application. 
 
-**What about the UI?** We provide a ready-to-use **[AI Prompt Generator](docs/08-crm-integration-guide.md#2-generating-the-ui-the-ai-prompt)** in the documentation. Just copy and paste it into ChatGPT, Claude, or Cursor, and it will instantly write the frontend code (Vue, React, Blade, etc.) that hooks perfectly into the backend we generated!
+**What about the UI?** Because every app uses a different frontend stack, we leave the UI to you! See our **[CRM Integration Guide](docs/08-crm-integration-guide.md)** for a simple checklist of the views you need to build to hook into the generated backend.
 
 ---
 
