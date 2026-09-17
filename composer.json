@@ -1,7 +1,25 @@
 {
-    "name": "meta-engine/laravel-meta",
+    "name": "manishnlet77/laravel-meta",
     "description": "A modular Meta API SDK/integration package for Laravel, with optional persistence and optional automation.",
     "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "meta",
+        "facebook",
+        "api",
+        "sdk"
+    ],
+    "authors": [
+        {
+            "name": "Manish Saini",
+            "email": "ms44587@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/manishnlet77/laravel-meta"
+    },
     "require": {
         "php": "^8.2|^8.3",
         "illuminate/support": "^10.0|^11.0|^12.0",
