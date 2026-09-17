@@ -69,6 +69,15 @@ class InstagramFetcher
     }
 
     /**
+     * Fetch the latest media items, optionally filtered by type.
+     * (This is an alias for getMedia, since Graph API returns latest by default).
+     */
+    public function getLatest(string $igUserId, int $limit = 10, ?string $mediaType = null): array
+    {
+        return $this->getMedia($igUserId, $limit, $mediaType);
+    }
+
+    /**
      * Fetch the top media items based on engagement (likes + comments).
      */
     public function getTop(string $igUserId, int $limit = 5, ?string $mediaType = null): array

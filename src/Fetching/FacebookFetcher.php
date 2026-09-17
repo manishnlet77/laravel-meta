@@ -60,7 +60,21 @@ class FacebookFetcher
     }
 
     /**
-     * Fetch the top posts, videos, or reels by engagement.
+     * Fetch the latest posts, videos, or reels.
+     * Type can be 'posts', 'reels', 'videos', or 'photos'.
+     */
+    public function getLatest(string $pageId, string $type = 'posts', int $limit = 10): array
+    {
+        return match($type) {
+            'reels' => $this->getReels($pageId, $limit),
+            'videos' => $this->getVideos($pageId, $limit),
+            'photos' => $this->getPhotos($pageId, $limit),
+            default => $this->getPosts($pageId, $limit),
+        };
+    }
+
+    /**
+     * Fetch the top trending posts, videos, or reels by engagement.
      * Type can be 'posts', 'reels', 'videos', or 'photos'.
      */
     public function getTop(string $pageId, string $type = 'posts', int $limit = 5): array

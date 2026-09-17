@@ -247,25 +247,25 @@ If you are a developer taking over this project, here is the ultimate cheat shee
 
 ---
 
-## 8. Fetching & Filtering Media (Reels, Videos, Posts)
+## 8. Fetching & Filtering Media (Latest vs. Top Trending)
 
-The package includes dedicated `Fetcher` classes to retrieve and filter your published media, which you can easily map and save to your own database.
+The package includes dedicated `Fetcher` classes to retrieve and filter your published media. You can fetch either the **Latest** (chronological) or the **Top Trending** (sorted by engagement: likes + comments) for any specific media type.
 
-### Fetching Top 10 Instagram Videos/Reels
-To fetch the top 10 most engaged (likes + comments) Reels or Videos from Instagram:
-
+### A. Fetching from Instagram (Latest vs Top)
 ```php
 use Vendor\LaravelMeta\Facades\Meta;
 
 $igUserId = 'YOUR_IG_USER_ID';
 
-// Fetch Top 10 Instagram Videos
+// --- LATEST (Chronological) ---
+$latestVideos = Meta::instagramFetcher()->getLatest($igUserId, 10, 'VIDEO');
+$latestReels  = Meta::instagramFetcher()->getLatest($igUserId, 10, 'REELS');
+$latestImages = Meta::instagramFetcher()->getLatest($igUserId, 10, 'IMAGE');
+$allLatest    = Meta::instagramFetcher()->getLatest($igUserId, 10); // All types
+
+// --- TOP TRENDING (Sorted by Likes + Comments) ---
 $topVideos = Meta::instagramFetcher()->getTop($igUserId, 10, 'VIDEO');
-
-// Fetch Top 10 Instagram Reels
-$topReels = Meta::instagramFetcher()->getTop($igUserId, 10, 'REELS');
-
-// Fetch Top 10 Images
+$topReels  = Meta::instagramFetcher()->getTop($igUserId, 10, 'REELS');
 $topImages = Meta::instagramFetcher()->getTop($igUserId, 10, 'IMAGE');
 ```
 
@@ -293,18 +293,20 @@ foreach ($response['data'] as $media) {
 }
 ```
 
-### Fetching Facebook Posts and Videos
-You can do the exact same thing for Facebook Pages:
+### C. Fetching from Facebook (Latest vs Top)
+You can do the exact same thing for Facebook Pages using the specific media type ('posts', 'reels', 'videos', 'photos'):
 
 ```php
 $pageId = 'YOUR_PAGE_ID';
 
-// Fetch specific media types
-$posts = Meta::facebookFetcher()->getPosts($pageId, 20);
-$reels = Meta::facebookFetcher()->getReels($pageId, 20);
-$videos = Meta::facebookFetcher()->getVideos($pageId, 20);
-$photos = Meta::facebookFetcher()->getPhotos($pageId, 20);
+// --- LATEST (Chronological) ---
+$latestPosts  = Meta::facebookFetcher()->getLatest($pageId, 'posts', 10);
+$latestReels  = Meta::facebookFetcher()->getLatest($pageId, 'reels', 10);
+$latestVideos = Meta::facebookFetcher()->getLatest($pageId, 'videos', 10);
+$latestPhotos = Meta::facebookFetcher()->getLatest($pageId, 'photos', 10);
 
-// Fetch the absolute most popular Facebook Posts
-$topPosts = Meta::facebookFetcher()->getTop($pageId, 'posts', 10);
+// --- TOP TRENDING (Sorted by Likes + Comments) ---
+$topPosts  = Meta::facebookFetcher()->getTop($pageId, 'posts', 10);
+$topReels  = Meta::facebookFetcher()->getTop($pageId, 'reels', 10);
+$topVideos = Meta::facebookFetcher()->getTop($pageId, 'videos', 10);
 ```
