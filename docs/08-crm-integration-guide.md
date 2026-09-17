@@ -27,14 +27,23 @@ Because every CRM uses a different frontend stack (Vue, React, Livewire, Blade),
 ---
 **Copy and paste this prompt into your AI IDE:**
 
-> "I have installed the `meta-engine/laravel-meta` package and scaffolded the backend using `php artisan meta:install-crm`. I now have a `MetaCrmController` with methods `index()`, `getAnalytics()`, and `schedulePost()`.
+> "I am working on a custom CRM (located at `http://your-local-url/admin/dashboard`). I have already installed a package via `composer require meta-engine/laravel-meta`, run `php artisan meta:install-crm`, and added my Meta App credentials to my `.env` file. 
+>
+> The backend is completely ready. I now have a `MetaCrmController` and three models: `MetaAccount`, `MetaPostSchedule`, and `MetaApiLog`.
 > 
-> Please generate a beautiful UI component for my CRM. The UI should have a sidebar with a 'Meta Dashboard' link. The main dashboard should contain three sections:
-> 1. **Accounts Linked:** A table or card view displaying the linked Facebook and Instagram accounts (fetched from `MetaAccount`).
-> 2. **Post Scheduler:** A form with fields for `meta_account_id` (dropdown), `media_type` (dropdown: text, image, video, reel), `media_url`, `message`, and `scheduled_for` (datetime picker). When submitted, it should POST to the `schedulePost` method.
-> 3. **Recent Analytics:** A section that displays the top performing posts fetched from the `getAnalytics` method.
+> Please update my CRM's frontend to integrate this:
 > 
-> Please generate this UI using [INSERT YOUR STACK HERE: e.g., Vue.js with TailwindCSS / Laravel Blade with Bootstrap]."
+> 1. **Sidebar Menu:** Add a new menu item in my CRM's sidebar called 'Meta Social Manager' with a Facebook/Instagram icon. Under it, add two submenus: 'Accounts' and 'Post Scheduler'.
+> 2. **Accounts View:** Create a view that lists all linked Facebook and Instagram accounts from the `meta_accounts` table.
+> 3. **Post Scheduler View:** Create a view with a form to schedule a post. The form should have:
+>    - Account Dropdown (fetching from `meta_accounts`)
+>    - Media Type Dropdown (Text, Image, Video, Reel)
+>    - Media URL input
+>    - Message/Caption textarea
+>    - Scheduled Date & Time picker
+> 4. **Logs View:** Add a simple table at the bottom of the scheduler page that reads from `meta_api_logs` to show if a post succeeded or failed.
+>
+> Please generate the exact [Vue/React/Blade] templates and Sidebar HTML/CSS required to add this to my existing CRM."
 
 ---
 
