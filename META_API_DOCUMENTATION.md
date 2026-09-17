@@ -1,6 +1,6 @@
 # Meta (Facebook & Instagram) API Integration Documentation
 
-This document explains the architecture, keys, permissions, and implementation details for the Meta Graph API integration within the CRM. It covers publishing to Facebook Pages and Instagram Business Accounts, including advanced formats like Reels, Stories, and Carousels.
+This document explains the architecture, keys, permissions, and implementation details for the Meta Graph API integration within the application. It covers publishing to Facebook Pages and Instagram Business Accounts, including advanced formats like Reels, Stories, and Carousels.
 
 ### 🚀 Supported Content Types
 The integration fully supports publishing the following formats:
@@ -31,7 +31,7 @@ To successfully fetch accounts and publish content, the **System User Token** mu
 4. `instagram_basic`: Allows the app to read basic information about connected Instagram Business accounts.
 5. `instagram_content_publish`: Required to publish content (Image, Video, Reel, Story, Carousel) to Instagram Business accounts.
 
-> **Important**: You cannot publish to a Facebook Page using a System User Token directly. The System User Token must be exchanged for a **Page Access Token**, which the CRM handles automatically.
+> **Important**: You cannot publish to a Facebook Page using a System User Token directly. The System User Token must be exchanged for a **Page Access Token**, which the application handles automatically.
 
 ---
 
@@ -42,19 +42,19 @@ To successfully fetch accounts and publish content, the **System User Token** mu
 ```mermaid
 sequenceDiagram
     participant User
-    participant CRM
+    participant Application
     participant Meta API
 
-    User->>CRM: Inputs System User Token
-    CRM->>Meta API: GET /me/accounts (Fetch FB Pages)
-    Meta API-->>CRM: Returns Pages & Page Access Tokens
+    User->>Application: Inputs System User Token
+    Application->>Meta API: GET /me/accounts (Fetch FB Pages)
+    Meta API-->>Application: Returns Pages & Page Access Tokens
     loop For each Facebook Page
-        CRM->>Meta API: GET /{page-id}?fields=instagram_business_account
-        Meta API-->>CRM: Returns Instagram ID (if linked)
-        CRM->>Meta API: GET /{ig-id} (Fetch IG profile)
-        Meta API-->>CRM: Returns IG Details
+        Application->>Meta API: GET /{page-id}?fields=instagram_business_account
+        Meta API-->>Application: Returns Instagram ID (if linked)
+        Application->>Meta API: GET /{ig-id} (Fetch IG profile)
+        Meta API-->>Application: Returns IG Details
     end
-    CRM->>Database: Encrypt & Store Page Access Tokens
+    Application->>Database: Encrypt & Store Page Access Tokens
 ```
 
 ### B. Publishing Flow (Example: Instagram Video/Reel)
@@ -95,7 +95,7 @@ sequenceDiagram
 5. The application encrypts the **Page Access Token** and saves it in the `social_connections` database table (`encrypted_access_token` column). 
 
 ### B. Publishing Content
-1. The user creates a post in the CRM UI, selects platforms (e.g., Facebook, Instagram), attaches media, and selects a content type (Text, Image, Video, Reel, Story, Carousel).
+1. The user creates a post in the Application UI, selects platforms (e.g., Facebook, Instagram), attaches media, and selects a content type (Text, Image, Video, Reel, Story, Carousel).
 2. The `PublishSocialPost` Laravel Queue Job is dispatched.
 3. The Job reads the `encrypted_access_token` from the database, decrypts it, and passes it to `MetaPlatform.php`.
 4. `MetaPlatform.php` routes the request to the correct Meta API endpoints based on the platform and content type.
@@ -128,7 +128,7 @@ sequenceDiagram
 
 ## 5. Exhaustive Endpoint Payloads (Zero-to-Hero Reference)
 
-If you are expanding this system or debugging, here are the exact structural requests the CRM is making to the Meta Graph API under the hood.
+If you are expanding this system or debugging, here are the exact structural requests the application is making to the Meta Graph API under the hood.
 
 ### A. Facebook Page Text Post
 ```http
@@ -151,7 +151,7 @@ POST https://graph.facebook.com/v22.0/{page-id}/photos
 {
   "access_token": "EAAZ...",
   "message": "Caption goes here",
-  "url": "https://your-crm.com/public/images/test.jpg"
+  "url": "https://your-app.com/public/images/test.jpg"
 }
 ```
 
@@ -201,7 +201,7 @@ POST https://graph.facebook.com/v22.0/{ig-user-id}/media
 ```json
 {
   "media_type": "REELS", // Or "VIDEO", "STORIES"
-  "video_url": "https://your-crm.com/video.mp4",
+  "video_url": "https://your-app.com/video.mp4",
   "caption": "Your caption here",
   "access_token": "EAAZ..."
 }
@@ -220,18 +220,18 @@ POST https://graph.facebook.com/v22.0/{ig-user-id}/media_publish
 
 ## 6. Webhooks Integration (Zero-to-Hero Setup)
 
-Webhooks allow Meta to push real-time notifications to your CRM (e.g., when a user comments on your post, sends you a DM, or if a scheduled post fails).
+Webhooks allow Meta to push real-time notifications to your application (e.g., when a user comments on your post, sends you a DM, or if a scheduled post fails).
 
 ### Step 1: Meta Developer Dashboard Setup
 1. Go to your Meta App Dashboard -> Webhooks.
 2. Click **Subscribe to an Object** (e.g., `Page` or `Instagram`).
-3. Callback URL: `https://your-crm-domain.com/webhooks/meta`
-4. Verify Token: Enter the exact string stored in your CRM database `social_platforms` table under `webhook_verify_token` (e.g., `meta_engine_webhook_secret_2026`).
+3. Callback URL: `https://your-app-domain.com/webhooks/meta`
+4. Verify Token: Enter the exact string stored in your application database `social_platforms` table under `webhook_verify_token` (e.g., `meta_engine_webhook_secret_2026`).
 
 ### Step 2: Code Implementation (`MetaWebhookController.php`)
 * **Endpoint**: `GET/POST /webhooks/meta`
-* **Verification (GET)**: When you click "Verify and Save" in Meta, they send a `GET` request. The CRM validates the `hub_verify_token` against the DB, and if it matches, returns the `hub_challenge` in plain text.
-* **Event Handling (POST)**: When an actual event happens, Meta sends a `POST` request. Your CRM will receive a JSON payload containing the `entry` array, which holds all the new messages, comments, or changes.
+* **Verification (GET)**: When you click "Verify and Save" in Meta, they send a `GET` request. The Application validates the `hub_verify_token` against the DB, and if it matches, returns the `hub_challenge` in plain text.
+* **Event Handling (POST)**: When an actual event happens, Meta sends a `POST` request. Your application will receive a JSON payload containing the `entry` array, which holds all the new messages, comments, or changes.
 
 ---
 

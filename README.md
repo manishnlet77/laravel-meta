@@ -88,7 +88,7 @@ You will receive a clear pass/fail report confirming if your App ID, Secret, and
 This package natively supports two usage modes depending on your application's architecture:
 
 ### Direct API Mode (No Database Required)
-Your CRM/Application directly calls Meta APIs through our services.
+Your Application directly calls Meta APIs through our services.
 * Perfect for simple integrations (e.g., just fetching a single lead).
 * No migrations required (`META_DATABASE_ENABLED=false`).
 
@@ -96,8 +96,8 @@ Your CRM/Application directly calls Meta APIs through our services.
 // Example: Direct API Lead Retrieval
 $lead = Meta::leads()->get('123456789');
 
-// Map the data to your own CRM tables manually
-CRMLead::create([
+// Map the data to your own application tables manually
+Lead::create([
     'name' => $lead->getName(),
     'email' => $lead->getEmail(),
 ]);

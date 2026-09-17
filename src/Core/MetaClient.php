@@ -134,6 +134,37 @@ class MetaClient
     }
 
     /**
+     * Upload binary data for things like Facebook Reels.
+     */
+    public function requestBinaryUpload(string $uploadUrl, string $filePath, int $fileSize): array
+    {
+        if (!$this->accessToken) {
+            throw new MetaConfigurationException("An access token is required to make Graph API requests.");
+        }
+
+        $stream = fopen($filePath, 'r');
+        if (!$stream) {
+            throw new \Exception("Could not open file stream: {$filePath}");
+        }
+
+        // Meta's binary upload for Reels requires an 'OAuth' prefix rather than Bearer in some instances, 
+        // and specific headers for file size and offset.
+        $response = Http::withHeaders([
+            'Authorization' => 'OAuth ' . $this->accessToken,
+            'offset' => 0,
+            'file_size' => $fileSize,
+        ])
+        ->withBody($stream, 'application/octet-stream')
+        ->post($uploadUrl);
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
+
+        return $this->handleResponse($response);
+    }
+
+    /**
      * Normalize errors and throw the correct exception.
      */
     protected function handleError(int $statusCode, array $data): void

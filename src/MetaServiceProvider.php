@@ -15,7 +15,12 @@ class MetaServiceProvider extends ServiceProvider
             __DIR__.'/../config/meta.php', 'meta'
         );
 
-        // We will register Core services, Facades, and Modules here
+        $this->app->singleton('meta-engine', function ($app) {
+            $client = new \Vendor\LaravelMeta\Core\MetaClient(
+                config('meta.system_user_token')
+            );
+            return new \Vendor\LaravelMeta\MetaManager($client);
+        });
     }
 
     /**

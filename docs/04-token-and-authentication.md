@@ -6,7 +6,7 @@ This guide explains the complete flow of generating a Meta Access Token, assigni
 
 ## 1. System User & Token Flow (Graphical View)
 
-Here is a step-by-step visual representation of how a System User token connects your CRM to Meta:
+Here is a step-by-step visual representation of how a System User token connects your application to Meta:
 
 ```mermaid
 graph TD
@@ -17,7 +17,7 @@ graph TD
     B -->|Generates Token for| D
     D -->|Requests Permissions| E{Permissions: leads, pages, etc.}
     E -->|Grants| F((System User Access Token))
-    F -.->|Saved in .env| G[Laravel CRM Package]
+    F -.->|Saved in .env| G[Laravel Application Package]
     G -->|API Requests| H[(Meta Graph API)]
 ```
 
@@ -40,7 +40,7 @@ graph TD
 1. Go back to [Meta Business Settings](https://business.facebook.com/settings).
 2. On the left sidebar, navigate to **Users** > **System Users**.
 3. Click **Add**.
-4. Name your system user (e.g., "CRM API User") and select **Admin** as the system user role.
+4. Name your system user (e.g., "Application API User") and select **Admin** as the system user role.
 5. Click **Create System User**.
 
 ### Step D: Assign Assets to the System User
@@ -65,7 +65,7 @@ The System User needs permission to access your specific Meta assets.
 When generating the token, **only select the permissions you need**. Selecting unnecessary permissions can cause your app to require App Review unnecessarily. 
 
 ### Use Case 1: ONLY Lead Ads via Webhook (No Publishing)
-If your CRM only needs to receive leads automatically when someone fills out a form.
+If your application only needs to receive leads automatically when someone fills out a form.
 
 **Permissions Required to Generate Token:**
 * `leads_retrieval`
@@ -78,14 +78,14 @@ If your CRM only needs to receive leads automatically when someone fills out a f
 sequenceDiagram
     participant User as Facebook User
     participant Meta as Meta Platform
-    participant CRM as Laravel Package (Webhook)
+    participant Application as Laravel Package (Webhook)
     
-    Meta->>CRM: Webhook Verification Request
-    CRM-->>Meta: Returns Hub Challenge
+    Meta->>Application: Webhook Verification Request
+    Application-->>Meta: Returns Hub Challenge
     User->>Meta: Submits Lead Form
-    Meta->>CRM: POST /webhook (Leadgen Event containing Lead ID)
-    CRM->>Meta: GET /{lead-id} (Using System User Token)
-    Meta-->>CRM: Returns Decrypted Lead Data (Name, Email, etc.)
+    Meta->>Application: POST /webhook (Leadgen Event containing Lead ID)
+    Application->>Meta: GET /{lead-id} (Using System User Token)
+    Meta-->>Application: Returns Decrypted Lead Data (Name, Email, etc.)
 ```
 **To configure the Webhook:** 
 1. Go to your App Dashboard -> Webhooks -> Select "Page".
@@ -93,7 +93,7 @@ sequenceDiagram
 3. Provide your Laravel route URL and the `META_WEBHOOK_VERIFY_TOKEN` you set in `.env`.
 
 ### Use Case 2: ONLY Facebook Page Publishing
-If your CRM only needs to post text, images, or videos to a Facebook page.
+If your application only needs to post text, images, or videos to a Facebook page.
 
 **Permissions Required to Generate Token:**
 * `pages_show_list`
@@ -102,7 +102,7 @@ If your CRM only needs to post text, images, or videos to a Facebook page.
 * `pages_manage_metadata` (required in some API versions)
 
 ### Use Case 3: ONLY Instagram Publishing
-If your CRM auto-posts photos/reels to Instagram.
+If your application auto-posts photos/reels to Instagram.
 
 **Permissions Required to Generate Token:**
 * `instagram_basic`
@@ -111,7 +111,7 @@ If your CRM auto-posts photos/reels to Instagram.
 * `pages_read_engagement`
 
 ### Use Case 4: Full Ads Management
-If your CRM creates and manages campaigns.
+If your application creates and manages campaigns.
 
 **Permissions Required to Generate Token:**
 * `ads_management`
@@ -121,7 +121,7 @@ If your CRM creates and manages campaigns.
 
 ## 4. Enabling the Process in Laravel
 
-Once you have your App ID, App Secret, and System User Token, add them to your CRM's environment file.
+Once you have your App ID, App Secret, and System User Token, add them to your application's environment file.
 
 **`.env`**
 ```env
@@ -148,7 +148,7 @@ $lead = Meta::leads()->get('1234567890');
 // 2. Publishing to Facebook
 Meta::facebook()
     ->page('your_page_id')
-    ->publishText('Hello from the CRM API!');
+    ->publishText('Hello from the Application API!');
 ```
 
 ---
@@ -156,4 +156,4 @@ Meta::facebook()
 ## 5. Security Best Practices
 1. **Never commit your token**: Always store it in `.env` or an encrypted database column.
 2. **App Secret Proof**: Keep `META_APPSECRET_PROOF_ENABLED=true`. The `laravel-meta` package will automatically hash your token with your App Secret on every request, ensuring that even if your token leaks, it cannot be used without the App Secret.
-3. **Least Privilege**: Only assign the permissions your CRM actually needs based on the exact Use Case above.
+3. **Least Privilege**: Only assign the permissions your application actually needs based on the exact Use Case above.
