@@ -36,6 +36,8 @@ class MetaServiceProvider extends ServiceProvider
             $this->commands([
                 \Vendor\LaravelMeta\Console\Commands\MetaTestTokenCommand::class,
                 \Vendor\LaravelMeta\Console\Commands\MetaE2ETestCommand::class,
+                \Vendor\LaravelMeta\Console\Commands\MetaInstallCrmCommand::class,
+                \Vendor\LaravelMeta\Console\Commands\MetaUninstallCrmCommand::class,
             ]);
 
             // Migrations will be published if META_DATABASE_ENABLED is true

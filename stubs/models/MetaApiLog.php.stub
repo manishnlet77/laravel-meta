@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MetaApiLog extends Model
+{
+    protected $fillable = [
+        'endpoint',
+        'method',
+        'payload',
+        'response',
+        'status_code',
+        'is_error',
+    ];
+
+    protected $casts = [
+        'payload' => 'array',
+        'response' => 'array',
+        'is_error' => 'boolean',
+    ];
+}

@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\MetaAccount;
+use App\Models\MetaPostSchedule;
+use Vendor\LaravelMeta\Facades\Meta;
+
+class MetaCrmController extends Controller
+{
+    /**
+     * Display a listing of connected Meta Accounts.
+     */
+    public function index()
+    {
+        $accounts = MetaAccount::all();
+        $schedules = MetaPostSchedule::orderBy('scheduled_for', 'desc')->get();
+        
+        // return view('meta-crm.index', compact('accounts', 'schedules'));
+        return response()->json([
+            'accounts' => $accounts,
+            'schedules' => $schedules
+        ]);
+    }
+
+    /**
+     * Fetch top posts using the Laravel-Meta package
+     */
+    public function getAnalytics($accountId, $platform)
+    {
+        if ($platform === 'facebook') {
+            $data = Meta::facebookFetcher()->getTop($accountId, 'posts', 5);
+        } else {
+            $data = Meta::instagramFetcher()->getTop($accountId, 5);
+        }
+        
+        return response()->json($data);
+    }
+
+    /**
+     * Schedule a new post
+     */
+    public function schedulePost(Request $request)
+    {
+        $request->validate([
+            'meta_account_id' => 'required',
+            'media_type' => 'required|in:text,image,video,reel',
+            'scheduled_for' => 'required|date',
+        ]);
+
+        $schedule = MetaPostSchedule::create($request->all());
+
+        return response()->json(['message' => 'Post Scheduled!', 'data' => $schedule]);
+    }
+}

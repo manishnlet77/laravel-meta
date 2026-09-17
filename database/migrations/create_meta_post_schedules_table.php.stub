@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('meta_post_schedules', function (Blueprint $table) {
+            $table->id();
+            $table->string('meta_account_id')->comment('The Page/IG ID it will post to');
+            $table->string('media_type')->comment('text, image, video, reel');
+            $table->text('message')->nullable();
+            $table->string('media_url')->nullable();
+            $table->timestamp('scheduled_for');
+            $table->string('status')->default('pending')->comment('pending, published, failed');
+            $table->string('published_post_id')->nullable();
+            $table->text('error_message')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('meta_post_schedules');
+    }
+};

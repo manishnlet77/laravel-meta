@@ -27,5 +27,8 @@ Please refer to the specific guides below depending on what you are trying to ac
 7. **[Ads & Ad Account Management](docs/07-ads-management.md)**
    *(Draft)* Blueprint for managing Ad Accounts, Campaigns, and fetching Ads insights in the next major release.
 
-8. **[End-to-End Testing](docs/testing.md)**
+8. **[CRM Integration & Scaffolding](docs/08-crm-integration-guide.md)**
+   How to automatically scaffold the database tables (logs, schedules) and controllers directly into your own CRM, including an AI prompt for UI generation.
+
+9. **[End-to-End Testing](docs/testing.md)**
    How to run the built-in Sandbox UI and Artisan CLI test commands (`php artisan meta:e2e-test`) to verify your application works before deploying to production.

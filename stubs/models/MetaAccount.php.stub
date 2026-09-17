@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MetaAccount extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'platform',
+        'account_id',
+        'account_name',
+        'access_token',
+        'is_active',
+    ];
+
+    /**
+     * Scope to quickly get Facebook accounts
+     */
+    public function scopeFacebook($query)
+    {
+        return $query->where('platform', 'facebook');
+    }
+
+    /**
+     * Scope to quickly get Instagram accounts
+     */
+    public function scopeInstagram($query)
+    {
+        return $query->where('platform', 'instagram');
+    }
+}

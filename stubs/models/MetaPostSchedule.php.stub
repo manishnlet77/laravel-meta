@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MetaPostSchedule extends Model
+{
+    protected $fillable = [
+        'meta_account_id',
+        'media_type',
+        'message',
+        'media_url',
+        'scheduled_for',
+        'status',
+        'published_post_id',
+        'error_message',
+    ];
+
+    protected $casts = [
+        'scheduled_for' => 'datetime',
+    ];
+
+    /**
+     * Scope to get pending posts
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+}
