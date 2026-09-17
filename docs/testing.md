@@ -117,4 +117,22 @@ cd vendor/meta-engine/laravel-meta
 vendor/bin/phpunit
 ```
 
+## 5. End-to-End Automated Testing
+
+The package also includes a comprehensive, built-in automated testing command. This command verifies that your credentials work, generates lightweight dummy media (`.jpg` and `.mp4`), and attempts to publish all possible formats (Text, Images, Videos, Reels) to Facebook and Instagram. It then fetches them to verify and cleans up Facebook posts automatically.
+
+### Running the Test Locally
+
+If you have installed the package via Composer (`composer require meta-engine/laravel-meta`), you can run the test directly from your artisan console:
+
+```bash
+php artisan meta:e2e-test
+```
+
+**Requirements:**
+1. Your `.env` file must be populated with `META_DEVELOPER_APP_ID`, `META_DEVELOPER_APP_SECRET`, and a valid `META_SYSTEM_USERS_ACCESS_TOKEN`.
+2. The System User Token must have the correct permissions (`pages_manage_posts`, `instagram_content_publish`, etc.).
+
+*Note: Instagram's Graph API does not support programmatic deletion, so the test script will output the IDs of the generated Instagram posts and ask you to delete them manually via the Instagram app.*
+
 By using the Sandbox UI and these testing strategies, you can confidently integrate with Meta's APIs without the headache of manual API debugging!
