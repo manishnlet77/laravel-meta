@@ -38,4 +38,20 @@ class MetaManager
     {
         return new InstagramPublisher($this->client);
     }
+
+    /**
+     * Access the Facebook Fetcher.
+     */
+    public function facebookFetcher(): \Vendor\LaravelMeta\Fetching\FacebookFetcher
+    {
+        return new \Vendor\LaravelMeta\Fetching\FacebookFetcher($this->client);
+    }
+
+    /**
+     * Access the Instagram Fetcher.
+     */
+    public function instagramFetcher(): \Vendor\LaravelMeta\Fetching\InstagramFetcher
+    {
+        return new \Vendor\LaravelMeta\Fetching\InstagramFetcher($this->client);
+    }
 }

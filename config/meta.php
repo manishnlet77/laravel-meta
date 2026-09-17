@@ -23,8 +23,8 @@ return [
     |
     */
     'app' => [
-        'id' => env('META_APP_ID'),
-        'secret' => env('META_APP_SECRET'),
+        'id' => env('META_APP_ID', env('META_DEVELOPER_APP_ID')),
+        'secret' => env('META_APP_SECRET', env('META_DEVELOPER_APP_SECRET')),
         'proof_enabled' => env('META_APPSECRET_PROOF_ENABLED', true),
     ],
 
@@ -36,7 +36,7 @@ return [
     | The default long-lived System User Access Token used for Direct API mode.
     |
     */
-    'token' => env('META_SYSTEM_USER_TOKEN'),
+    'token' => env('META_SYSTEM_USER_TOKEN', env('META_SYSTEM_USERS_ACCESS_TOKEN')),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,7 +47,7 @@ return [
     |
     */
     'webhook' => [
-        'verify_token' => env('META_WEBHOOK_VERIFY_TOKEN'),
+        'verify_token' => env('META_WEBHOOK_VERIFY_TOKEN', env('META_VERIFY_TOKEN')),
     ],
 
     /*
