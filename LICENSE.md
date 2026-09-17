@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Manish Saini
+Copyright (c) 2026 Manish Saini <ms44587@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
